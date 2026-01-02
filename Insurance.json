@@ -1,0 +1,350 @@
+{
+  "name": "Insurance",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Insurance detail",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Patient name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Insurance card",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3b03cf77-038c-4b7f-ac63-4a5326b52c48",
+      "name": "On form submission",
+      "webhookId": "36097362-73d8-4ac6-abf9-b29068354635"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are a medical billing specialist. Look at the provided image. Extract the Insurance Member ID, the Group Number, and the insurance company Name. If you cannot find a piece of information, write 'not found'. Format your response clearly as a list.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "d188dd53-d5b9-4a1a-a6e7-07f34064b5c7",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "url": "http://zev.digital/",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "member_id",
+              "value": "="
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        560,
+        0
+      ],
+      "id": "322204aa-b09d-4afc-aca5-de3c051fc09b",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9aaefcdd-5667-4d9a-936b-57261697d053",
+              "leftValue": "",
+              "rightValue": "Active",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        0
+      ],
+      "id": "c6ebbc82-da81-4830-a8a8-bc063c7709bd",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "app3NugoravTVoB3F",
+          "mode": "list",
+          "cachedResultName": "insurance",
+          "cachedResultUrl": "https://airtable.com/app3NugoravTVoB3F"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblrjtRD8pdFolZXo",
+          "mode": "list",
+          "cachedResultName": "Table 1",
+          "cachedResultUrl": "https://airtable.com/app3NugoravTVoB3F/tblrjtRD8pdFolZXo"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "member_ID",
+              "displayName": "member_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Assignee",
+              "displayName": "Assignee",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Todo",
+                  "value": "Todo"
+                },
+                {
+                  "name": "In progress",
+                  "value": "In progress"
+                },
+                {
+                  "name": "Done",
+                  "value": "Done"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Attachments",
+              "displayName": "Attachments",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Attachment Summary",
+              "displayName": "Attachment Summary",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        976,
+        -80
+      ],
+      "id": "5e3515bc-a6dc-41d4-932d-88f30dcc98fd",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "tBKpL2rvDxewJE5S",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "=",
+        "text": "=",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        976,
+        96
+      ],
+      "id": "337c016d-dded-4feb-b792-85ff321addbd",
+      "name": "Send a text message",
+      "webhookId": "61278363-7847-4228-89e4-48bfb3492b4a",
+      "credentials": {
+        "telegramApi": {
+          "id": "ZEHMphPov3fB7zbP",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama3.2-vision:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "b9a55d5c-34a9-468e-8581-c07f1bc7f828",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "4ZAciB8VVMeVEsu9",
+          "name": "Ollama account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ef649fdb-f374-407f-aef9-fda492989d27",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "24e07a3a8e846268a7f6622973180a64f2ed34ccbda513ba16315bd1af4ef78d"
+  },
+  "id": "C5HXSB6bVsyldCnr",
+  "tags": []
+}
